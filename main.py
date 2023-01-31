@@ -21,7 +21,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 # location_lon = "37.76999"
 # location_lat = "-122.44696"
 # radius = "500"
-# secretkey ="AIzaSyCFRoQAMWl1TXH5la1csQdf34jYJ8OYxm8"
+# secretkey =""
 # google_place_url = f"https://maps.googleapis.com/maps/api/place/autocomplete/json?input={name}&types=establishment&location={location_lon}%2C-122.location_lat&radius={radius}&key={secretkey}"
 
 
