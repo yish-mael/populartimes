@@ -76,7 +76,7 @@ def placerequest():
     
 @app.get("/api/google/place", tags=["google place API"])
 async def place():
-    results = await placerequest()
+    results =  placerequest()
     return {"data": results}
 # API bulding dynamic fast API url 
 @app.get("/items/{item_id}")
