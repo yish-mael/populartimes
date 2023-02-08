@@ -30,7 +30,9 @@ googleapikey = os.getenv('GOOGLEAPIKEY', None)
 app = FastAPI(title="Backend API")
 origins= [
     "http://localhost:3000",
-    "localhost:3000"
+    "localhost:3000",
+    "http://127.0.0.1:5173",
+    "127.0.0.1:5173"
 ]
 
 app.add_middleware(
@@ -49,7 +51,7 @@ async def read_root() -> dict:
 async def request():
     url = f"https://services.arcgis.com/su8ic9KbA7PYVxPS/arcgis/rest/services/Download_COVID_Cases_By_Zip_Codes/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson"
     r = requests.get(url)
-    return r.text
+    return r.json()
 
 @app.get("/api/data", tags=["Harris County API"])
 async def data() -> dict:
@@ -61,6 +63,11 @@ def url_bulder(name: str, location: str, radius: str, secretkey: str):
     google_place_url = f"https://maps.googleapis.com/maps/api/place/autocomplete/json?input={name}&types=establishment&location={location}&radius={radius}&key={secretkey}"
     return google_place_url
 
+# Busy Time Api Implementation
+@app.get("/api/busy", tags=["Busy Times API"])
+async def Populartime(address: str):
+    data = livepopulartimes.get_populartimes_by_address(address, proxy=False)
+    return data
 
 def placerequest():
     payload={}
