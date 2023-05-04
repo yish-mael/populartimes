@@ -52,7 +52,7 @@ async def request():
     url = f"https://services.arcgis.com/su8ic9KbA7PYVxPS/arcgis/rest/services/Download_COVID_Cases_By_Zip_Codes/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson"
     r = requests.get(url)
     return r.json()
-
+ 
 @app.get("/api/data", tags=["Harris County API"])
 async def data() -> dict:
     results = await request()
@@ -60,7 +60,7 @@ async def data() -> dict:
 
 
 def url_bulder(name: str, location: str, radius: str, secretkey: str):
-    google_place_url = f"https://maps.googleapis.com/maps/api/place/autocomplete/json?input={name}&types=establishment&location={location}&radius={radius}&key={secretkey}"
+    google_place_url = f"https://maps.googleapis.com/maps/api/place/autocomplete/json?input={name}&types=establishment&location={location}&radius={radius}&strictbounds=true&key={secretkey}"
     return google_place_url
 
 # Busy Time Api Implementation
@@ -69,22 +69,24 @@ async def Populartime(address: str):
     data = livepopulartimes.get_populartimes_by_address(address, proxy=False)
     return data
 
-def placerequest():
+def placerequest(name, location, radius):
     payload={}
     headers = {}
     #response = requests.get(google_place_url, headers=headers, data=payload)
-    name = "amoeba"
-    location = "37.76999 -122.44696"
-    radius = "500"
+    # name = "store"
+    # location = "37.76999 -122.44696"
+    # radius = "500"
     secretkey = googleapikey
     google_place_url = url_bulder(name, location, radius,secretkey)
     response = requests.get(google_place_url)
-    return response.text
+    # return response.text
+    return response.json()
     
 @app.get("/api/google/place", tags=["google place API"])
-async def place():
-    results =  placerequest()
+async def place(name: str, location: str, radius: str):
+    results =  placerequest(name, location, radius)
     return {"data": results}
+
 # API bulding dynamic fast API url 
 @app.get("/items/{item_id}")
 async def read_item(item_id: str, types: Union[str, None] = "establishment", location: Union[str, None] = "37.76999 -122.44696",  radius: Union[str, None] = "500", key: Union[str, None] = googleapikey):
@@ -113,6 +115,7 @@ async def get_place_by_name(name: str,key: str):
         print(url)
         response = requests.get(url)
         return response.text
+    
 # Google API 
 @app.get("/api/google/{name}", tags=["google API name"])
 async def googlename(name: str,key: Union [str, None]):
